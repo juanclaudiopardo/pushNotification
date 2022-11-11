@@ -39,6 +39,7 @@ export default function App() {
     const configurePushNotification = async () => {
       const { status } = await Notifications.getPermissionsAsync();
       let finalStatus = status;
+
       if (finalStatus !== 'granted') {
         const { status } = await Notifications.requestPermissionsAsync;
         finalStatus = status;
@@ -52,14 +53,15 @@ export default function App() {
       }
       const pushTokenData = await Notifications.getExpoPushTokenAsync();
       console.log(pushTokenData);
+      if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.DEFAULT,
+        });
+      }
     };
+
     configurePushNotification();
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.DEFAULT,
-      });
-    }
   }, []);
 
   // useEffect(() => {
